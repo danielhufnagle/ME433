@@ -16,11 +16,11 @@ void pin_input_output(int pin, int direction) {
     // sets direction of pin to input or output
     // 1 is input, 0 is output
     
-    // read io polarity register (0x00)
+    // read io direction register (0x00)
     uint8_t reg = 0x00;
     uint8_t val;
-    i2c_write_blocking(i2c_default, MCP23008_ADDR, &reg, 1, true);
-    i2c_read_blocking(i2c_default, MCP23008_ADDR, &val, 1, false);
+    i2c_write_blocking(I2C_PORT, MCP23008_ADDR, &reg, 1, true);
+    i2c_read_blocking(I2C_PORT, MCP23008_ADDR, &val, 1, false);
     
     // modify value according to pin and write back
     if (direction) {

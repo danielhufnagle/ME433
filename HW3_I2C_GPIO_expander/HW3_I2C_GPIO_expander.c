@@ -18,6 +18,7 @@ int main() {
         int button_pressed = read_pin(0);
         if (button_pressed) {
             set_pin(7, 1);
+            sleep_ms(10);
         }
         else {
             set_pin(7, 0);

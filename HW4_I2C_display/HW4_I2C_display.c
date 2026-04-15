@@ -44,8 +44,5 @@ int main()
 
         draw_string(2, 2, message_1);
         draw_string(2, 22, message_2);
-
-        printf("Hello, world!\n");
-        sleep_ms(1000);
     }
 }
