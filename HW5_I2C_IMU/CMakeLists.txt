@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(HW5_I2C_IMU HW5_I2C_IMU.c )
+add_executable(HW5_I2C_IMU HW5_I2C_IMU.c MPU6050.h MPU6050.c ssd1306.h ssd1306.c font.h ssd_text.c ssd_text.h)
 
 pico_set_program_name(HW5_I2C_IMU "HW5_I2C_IMU")
 pico_set_program_version(HW5_I2C_IMU "0.1")
@@ -46,7 +46,8 @@ pico_enable_stdio_usb(HW5_I2C_IMU 1)
 
 # Add the standard library to the build
 target_link_libraries(HW5_I2C_IMU
-        pico_stdlib)
+        pico_stdlib
+        hardware_i2c)
 
 # Add the standard include files to the build
 target_include_directories(HW5_I2C_IMU PRIVATE
