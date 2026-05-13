@@ -43,6 +43,7 @@
 #define REMOTE_MODE_RIGHT 3
 #define MODE_BUTTON_PIN 10
 #define LED_PIN 0
+#define MODE_LED 1
 
 //--------------------------------------------------------------------+
 // MACRO CONSTANT TYPEDEF PROTYPES
@@ -72,8 +73,14 @@ int main(void)
 {
   board_init();
 
+  gpio_init(MODE_LED);
+  gpio_set_dir(MODE_LED, 1);
+  gpio_put(MODE_LED, 1);
+
   // init device stack on configured roothub port
   tud_init(BOARD_TUD_RHPORT);
+
+  mouse_mode = MOUSE_MODE_REMOTE;
 
   if (board_init_after_tusb) {
     board_init_after_tusb();
@@ -87,7 +94,9 @@ int main(void)
   // initialize LED
   gpio_init(LED_PIN);
   gpio_set_dir(LED_PIN, 1);
-  gpio_put(LED_PIN, 0);
+  gpio_put(LED_PIN, 1);
+
+  gpio_put(MODE_LED, 0);
 
   // initialize IMU
   i2c_init(i2c_default, 400000);
@@ -95,7 +104,7 @@ int main(void)
   gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
   bool success = MPU_init(i2c_default, PICO_DEFAULT_I2C_SDA_PIN, PICO_DEFAULT_I2C_SCL_PIN);
   if (!success) {
-    gpio_put(LED_PIN, 1);
+    gpio_put(LED_PIN, 0);
   }
 
   while (1)
@@ -108,9 +117,11 @@ int main(void)
     if (gpio_get(MODE_BUTTON_PIN) == 0) {
       if (mouse_mode == MOUSE_MODE_DEFAULT) {
         mouse_mode = MOUSE_MODE_REMOTE;
+        gpio_put(MODE_LED, 1);
       }
       else {
         mouse_mode = MOUSE_MODE_DEFAULT;
+        gpio_put(MODE_LED, 0);
       }
       sleep_ms(100); // debounce in software
     }
@@ -189,8 +200,8 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
       // no button, right + down, no scroll, no pan
       // tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, delta, delta, 0, 0);
       if (mouse_mode == MOUSE_MODE_DEFAULT) {
-        uint8_t delta_x = (uint8_t)(40.0 * IMU.x_accel);
-        uint8_t delta_y = (uint8_t)(40.0 * IMU.y_accel);
+        int8_t delta_x = (int8_t)(40.0 * IMU.x_accel);
+        int8_t delta_y = (int8_t)(40.0 * IMU.y_accel);
         tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, delta_x, delta_y, 0, 0);
       }
       else {
