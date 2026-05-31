@@ -4,7 +4,7 @@
 #include "hardware/spi.h"
 #include "MCP4912.h"
 
-#define SAMPLE_PERIOD_US 5000 // set to 50000 for proper values
+#define SAMPLE_PERIOD_US 5000 // set to 5000 for proper values
 #define TRIANGLE_SAMPLES 200
 #define SINE_SAMPLES 100
 #define PI 3.14159265358979323846
